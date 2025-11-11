@@ -63,13 +63,18 @@ public class ProblemSolutions {
      * returning the 0 if queue is empty else return pq.peek().
      */
 
-  public static int lastBoulder(int[] boulders) {
+    public static int lastBoulder(int[] boulders) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        for (int x : boulders) pq.offer(x);
 
-      //
-      // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME / SECTION # ABOVE
-      //
-      return -1;
-  }
+        while (pq.size() > 1) {
+            int y = pq.poll();
+            int x = pq.poll(); 
+            if (y != x) pq.offer(y - x);
+        }
+        return pq.isEmpty() ? 0 : pq.peek();
+    }
+
 
 
     /**
@@ -90,13 +95,18 @@ public class ProblemSolutions {
      */
 
     public static ArrayList<String> showDuplicates(ArrayList<String> input) {
-
-        //
-        //  YOUR CODE GOES HERE
-        //
-        return new ArrayList<>();  // Make sure result is sorted in ascending order
-
+        HashMap<String, Integer> count = new HashMap<>();
+        for (String s : input) {
+            count.put(s, count.getOrDefault(s, 0) + 1);
+        }
+        ArrayList<String> ans = new ArrayList<>();
+        for (Map.Entry<String, Integer> e : count.entrySet()) {
+            if (e.getValue() > 1) ans.add(e.getKey());   
+        }
+        Collections.sort(ans);
+        return ans;
     }
+
 
 
     /**
@@ -130,10 +140,23 @@ public class ProblemSolutions {
      */
 
     public static ArrayList<String> pair(int[] input, int k) {
+        HashMap<Integer, Integer> freq = new HashMap<>();
+        for (int x : input) freq.put(x, freq.getOrDefault(x, 0) + 1);
 
-        //
-        //  YOUR CODE GOES HERE
-        //
-        return new ArrayList<>();  // Make sure returned lists is sorted as indicated above
+        ArrayList<Integer> keys = new ArrayList<>(freq.keySet());
+        Collections.sort(keys);
+
+        ArrayList<String> out = new ArrayList<>();
+        for (int a : keys) {
+            int b = k - a;
+            if (b < a) continue;                 
+            if (b == a) {
+                if (freq.get(a) >= 2) out.add("(" + a + ", " + b + ")");
+            } else if (freq.containsKey(b)) {
+                out.add("(" + a + ", " + b + ")");
+            }
+        }
+        return out;
     }
+
 }
